@@ -30,3 +30,33 @@
 | identity | Identity block of the compute cluster |
 
 
+
+### README.md
+
+#### Requirements
+- Terraform >= 1.3.0
+- AzureRM Provider = 4.46.0
+
+#### Providers
+| Name    | Version |
+|---------|---------|
+| azurerm | 4.46.0  |
+
+#### Resources
+| Name                                                   | Type     |
+|--------------------------------------------------------|----------|
+| azurerm_machine_learning_compute_instance.this          | resource |
+
+#### Inputs
+| Name     | Description                                           | Type   | Required |
+|----------|-------------------------------------------------------|--------|----------|
+| settings | Object containing all arguments for the ML instance   | object | yes      |
+
+#### Outputs
+| Name | Description                           |
+|------|---------------------------------------|
+| id   | The ID of the ML Compute Instance     |
+| name | The name of the ML Compute Instance   |
+
+
+
