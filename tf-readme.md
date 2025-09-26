@@ -60,3 +60,37 @@
 
 
 
+### README.md
+
+# azurerm_machine_learning_workspace - module
+
+## Requirements
+- Terraform 1.3+ (recommended)
+- azurerm provider v4.46.0
+
+## Providers
+| Name | Version |
+|------|---------|
+| hashicorp/azurerm | 4.46.0 |
+
+## Resources
+| Resource | Notes |
+|---|---|
+| azurerm_machine_learning_workspace.this | Creates a Machine Learning Workspace in Azure |
+
+## Inputs
+| Name | Type | Required | Description |
+|---|---:|:---:|---|
+| settings | any | yes | Map/object with workspace settings (see variable description) |
+
+## Outputs
+| Name | Description |
+|---|---|
+| id | ID of the ML workspace |
+| name | Name of the workspace |
+| discovery_url | Discovery service URL for experimentation services |
+| workspace_id | Immutable workspace ID |
+
+
+
+
