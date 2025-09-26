@@ -1,15 +1,3 @@
-
-
-```
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.46.0"
-    }
-  }
-}
-
 resource "azurerm_machine_learning_compute_cluster" "this" {
   name                          = var.settings.name
   machine_learning_workspace_id = var.settings.machine_learning_workspace_id
@@ -219,4 +207,146 @@ output "name" {
   description = "The name of the Machine Learning Compute Instance"
 }
 ```
+
+---
+
+
+resource "azurerm_machine_learning_workspace" "this" {
+  name                = var.settings.name
+  resource_group_name = var.settings.resource_group_name
+  location            = var.settings.location
+  application_insights_id = var.settings.application_insights_id
+  key_vault_id           = var.settings.key_vault_id
+  storage_account_id     = var.settings.storage_account_id
+
+  kind                         = try(var.settings.kind, null)
+  container_registry_id         = try(var.settings.container_registry_id, null)
+  public_network_access_enabled = try(var.settings.public_network_access_enabled, null)
+  image_build_compute_name      = try(var.settings.image_build_compute_name, null)
+  description                   = try(var.settings.description, null)
+  friendly_name                 = try(var.settings.friendly_name, null)
+  high_business_impact          = try(var.settings.high_business_impact, null)
+  primary_user_assigned_identity = try(var.settings.primary_user_assigned_identity, null)
+  v1_legacy_mode_enabled        = try(var.settings.v1_legacy_mode_enabled, null)
+  sku_name                      = try(var.settings.sku_name, null)
+  service_side_encryption_enabled = try(var.settings.service_side_encryption_enabled, null)
+  tags                          = try(var.settings.tags, null)
+
+  identity {
+    type         = var.settings.identity.type
+    identity_ids = try(var.settings.identity.identity_ids, null)
+  }
+
+  dynamic "encryption" {
+    for_each = try(var.settings.encryption, null) == null ? [] : [var.settings.encryption]
+    content {
+      key_vault_id             = encryption.value.key_vault_id
+      key_id                   = encryption.value.key_id
+      user_assigned_identity_id = try(encryption.value.user_assigned_identity_id, null)
+    }
+  }
+
+  dynamic "managed_network" {
+    for_each = try(var.settings.managed_network, null) == null ? [] : [var.settings.managed_network]
+    content {
+      isolation_mode                  = try(managed_network.value.isolation_mode, null)
+      provision_on_creation_enabled   = try(managed_network.value.provision_on_creation_enabled, null)
+    }
+  }
+
+  dynamic "serverless_compute" {
+    for_each = try(var.settings.serverless_compute, null) == null ? [] : [var.settings.serverless_compute]
+    content {
+      subnet_id        = try(serverless_compute.value.subnet_id, null)
+      public_ip_enabled = try(serverless_compute.value.public_ip_enabled, null)
+    }
+  }
+
+  dynamic "feature_store" {
+    for_each = try(var.settings.feature_store, null) == null ? [] : [var.settings.feature_store]
+    content {
+      computer_spark_runtime_version = try(feature_store.value.computer_spark_runtime_version, null)
+      offline_connection_name        = try(feature_store.value.offline_connection_name, null)
+      online_connection_name         = try(feature_store.value.online_connection_name, null)
+    }
+  }
+}
+```
+
+### outputs.tf
+
+```
+output "id" {
+  value = azurerm_machine_learning_workspace.this.id
+}
+
+output "name" {
+  value = azurerm_machine_learning_workspace.this.name
+}
+
+output "discovery_url" {
+  value = azurerm_machine_learning_workspace.this.discovery_url
+}
+
+output "workspace_id" {
+  value = azurerm_machine_learning_workspace.this.workspace_id
+}
+
+output "identity" {
+  value = azurerm_machine_learning_workspace.this.identity
+}
+```
+
+### variables.tf
+
+```
+variable "settings" {
+  type = any
+  description = <<EOT
+Object or map with workspace settings. Keys:
+- name (string, required)
+- resource_group_name (string, required)
+- location (string, required)
+- application_insights_id (string, required)
+- key_vault_id (string, required)
+- storage_account_id (string, required)
+- identity (object, required) {
+    type (string, required)
+    identity_ids (list(string), optional)
+  }
+- kind (string, optional)
+- container_registry_id (string, optional)
+- public_network_access_enabled (bool, optional)
+- image_build_compute_name (string, optional)
+- description (string, optional)
+- friendly_name (string, optional)
+- high_business_impact (bool, optional)
+- primary_user_assigned_identity (string, optional)
+- v1_legacy_mode_enabled (bool, optional)
+- sku_name (string, optional)
+- service_side_encryption_enabled (bool, optional)
+- encryption (object, optional) {
+    key_vault_id (string, required)
+    key_id (string, required)
+    user_assigned_identity_id (string, optional)
+  }
+- managed_network (object, optional) {
+    isolation_mode (string, optional)
+    provision_on_creation_enabled (bool, optional)
+  }
+- serverless_compute (object, optional) {
+    subnet_id (string, optional)
+    public_ip_enabled (bool, optional)
+  }
+- feature_store (object, optional) {
+    computer_spark_runtime_version (string, optional)
+    offline_connection_name (string, optional)
+    online_connection_name (string, optional)
+  }
+- tags (map, optional)
+EOT
+}
+```
+
+
 
