@@ -162,4 +162,45 @@
 | tenant_id | The Tenant ID for the Service Principal |
 
 
+# Azure Machine Learning Synapse Spark Module
+
+## Requirements
+| Name | Version |
+|------|---------|
+| terraform | >= 1.3 |
+| azurerm   | = 3.117.0 |
+
+## Providers
+| Name | Version |
+|------|---------|
+| azurerm | 3.117.0 |
+
+## Resources
+| Name | Type |
+|------|------|
+| azurerm_machine_learning_synapse_spark.this | resource |
+
+## Inputs
+| Name | Description | Type | Required |
+|------|-------------|------|----------|
+| settings.name | The name of the Machine Learning Synapse Spark | string | yes |
+| settings.machine_learning_workspace_id | The ID of the Machine Learning Workspace | string | yes |
+| settings.location | The Azure Region where the Synapse Spark should exist | string | yes |
+| settings.synapse_spark_pool_id | The ID of the linked Synapse Spark Pool | string | yes |
+| settings.description | Description of the Synapse Spark | string | no |
+| settings.local_auth_enabled | Whether local authentication is enabled (default: true) | bool | no |
+| settings.identity.type | Type of Managed Service Identity (`SystemAssigned`, `UserAssigned`, or both) | string | no |
+| settings.identity.identity_ids | List of User Assigned Managed Identity IDs (required if type includes `UserAssigned`) | list(string) | no |
+| settings.tags | Tags to assign to the Synapse Spark | map(string) | no |
+
+## Outputs
+| Name | Description |
+|------|-------------|
+| id | The ID of the Machine Learning Synapse Spark |
+| identity | Managed Service Identity block |
+| principal_id | The Principal ID for the Managed Identity |
+| tenant_id | The Tenant ID for the Managed Identity |
+
+
+
 
